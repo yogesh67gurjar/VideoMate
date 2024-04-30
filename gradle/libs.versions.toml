@@ -8,8 +8,10 @@ espresso-core = "3.5.1"
 appcompat = "1.6.1"
 material = "1.11.0"
 constraintlayout = "2.1.4"
-#hilt
+# hilt
 hilt = "2.51.1"
+# gson converter
+gson = "2.11.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -22,6 +24,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 # hilt
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hiltCompiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+# gson converter
+gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson" }
 
 
 [plugins]

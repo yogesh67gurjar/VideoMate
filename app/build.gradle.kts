@@ -52,4 +52,7 @@ dependencies {
     // hilt
     implementation(libs.hilt)
     kapt(libs.hiltCompiler)
+
+    // gson converter
+    implementation(libs.gson)
 }
