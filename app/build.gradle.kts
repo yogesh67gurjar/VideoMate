@@ -37,6 +37,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -55,4 +58,7 @@ dependencies {
 
     // gson converter
     implementation(libs.gson)
+
+    // lottie
+    implementation(libs.lottie)
 }
