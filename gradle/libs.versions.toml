@@ -13,7 +13,8 @@ hilt = "2.51.1"
 # gson converter
 gson = "2.11.0"
 # lottie
-lottie="6.4.0"
+lottie = "6.4.0"
+sdp_ssp = "1.1.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -30,6 +31,9 @@ hiltCompiler = { group = "com.google.dagger", name = "hilt-compiler", version.re
 gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson" }
 # lottie
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+
+ssp = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "sdp_ssp" }
+sdp = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "sdp_ssp" }
 
 
 
