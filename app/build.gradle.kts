@@ -61,4 +61,8 @@ dependencies {
 
     // lottie
     implementation(libs.lottie)
+
+    // sdp & ssp
+    implementation(libs.sdp)
+    implementation(libs.ssp)
 }
