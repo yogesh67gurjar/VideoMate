@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical"
-    tools:context=".view.fragments.FolderFragment">
+    tools:context=".view.fragments.VideoFragment">
 
     <TextView
         android:id="@+id/title"
@@ -16,7 +16,7 @@
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="Folders"
+        android:text="Videos"
         android:textColor="@color/white"
         android:textSize="@dimen/_18ssp" />
 
@@ -28,7 +28,7 @@
         android:queryHint="Enter name here" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/folderRecyclerView"
+        android:id="@+id/videoRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_15sdp"
@@ -42,7 +42,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
         <ImageView

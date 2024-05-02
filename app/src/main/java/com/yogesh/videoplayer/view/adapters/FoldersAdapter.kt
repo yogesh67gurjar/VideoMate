@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.model.FolderResponse
 import com.yogesh.videoplayer.model.VideoResponse
+import com.yogesh.videoplayer.utils.Constants
+import com.yogesh.videoplayer.utils.RecyclerViewClickListener
 
 class FoldersAdapter(
-    private val videos: List<VideoResponse>,
-    private val folders: List<FolderResponse>
+    private val folders: List<FolderResponse>,
+    private val clickListener: RecyclerViewClickListener
 ) :
     RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
 
@@ -27,6 +29,12 @@ class FoldersAdapter(
         val folderName = singleUnitPath.path.substring(indexPathIndex + 1)
         holder.name.text = folderName
         holder.noOfFiles.text = "${singleUnitPath.noOfFiles} Videos"
+
+        holder.itemView.setOnClickListener {
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                clickListener.onClick(holder.adapterPosition, Constants.FOLDER)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
