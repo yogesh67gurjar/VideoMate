@@ -3,11 +3,12 @@ package com.yogesh.videoplayer.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.databinding.ActivityMainBinding
+import com.yogesh.videoplayer.utils.FragmentMethods
 import com.yogesh.videoplayer.utils.Session
 import com.yogesh.videoplayer.view.fragments.FolderFragment
+import com.yogesh.videoplayer.view.fragments.VideoFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -17,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var session: Session
     private lateinit var fragment: Fragment
-    private lateinit var fragmentTransaction: FragmentTransaction
     private lateinit var activityMainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,12 +34,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSetup() {
         clickEvents()
-        activityMainBinding.title.text = "Folders"
-
         fragment = FolderFragment()
-        fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.frame, fragment).commit()
+        FragmentMethods.addFragment(R.id.frame, fragment, supportFragmentManager)
     }
 
-
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        val currentFragment = fragmentManager.findFragmentById(R.id.frame)
+        if (currentFragment is VideoFragment) {
+            fragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+            finish()
+        }
+    }
 }

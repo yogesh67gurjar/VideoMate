@@ -9,23 +9,27 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.databinding.FragmentFolderBinding
 import com.yogesh.videoplayer.model.FolderResponse
 import com.yogesh.videoplayer.model.VideoResponse
+import com.yogesh.videoplayer.utils.Constants
+import com.yogesh.videoplayer.utils.FragmentMethods
+import com.yogesh.videoplayer.utils.RecyclerViewClickListener
 import com.yogesh.videoplayer.view.adapters.FoldersAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
 
-class FolderFragment : Fragment() {
+class FolderFragment : Fragment(), RecyclerViewClickListener {
     private lateinit var fragmentFolderBinding: FragmentFolderBinding
     private lateinit var foldersAdapter: FoldersAdapter
     private lateinit var context: Context
+    private lateinit var fragment: Fragment
 
     private var videosList: MutableList<VideoResponse> = mutableListOf()
     private var foldersList: MutableList<FolderResponse> = mutableListOf()
@@ -40,11 +44,21 @@ class FolderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         fragmentFolderBinding = FragmentFolderBinding.inflate(inflater, container, false)
+
+        initSetup()
+
         return fragmentFolderBinding.root
+    }
+
+    private fun initSetup() {
+        foldersAdapter = FoldersAdapter(foldersList, this)
+        fragmentFolderBinding.folderRecyclerView.adapter = foldersAdapter
+        fragmentFolderBinding.folderRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     override fun onResume() {
         super.onResume()
+        fragmentFolderBinding.rootLayout.visibility = View.VISIBLE
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (!Environment.isExternalStorageManager()) {
@@ -71,9 +85,7 @@ class FolderFragment : Fragment() {
         videosList = getFoldersFunc()
 
         if (foldersList.size > 0) {
-            foldersAdapter = FoldersAdapter(videosList, foldersList)
-            fragmentFolderBinding.folderRecyclerView.adapter = foldersAdapter
-            fragmentFolderBinding.folderRecyclerView.layoutManager = LinearLayoutManager(context)
+            foldersAdapter.notifyDataSetChanged()
             fragmentFolderBinding.folderRecyclerView.visibility = View.VISIBLE
             fragmentFolderBinding.noDataFound.visibility = View.GONE
         } else {
@@ -103,8 +115,8 @@ class FolderFragment : Fragment() {
                     cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED))
                 val video = VideoResponse(id, title, displayName, size, duration, path, dateAdded)
 
-                val isVideoKaIndex = path.lastIndexOf("/")
-                val subString = path.substring(0, isVideoKaIndex)
+                val currentVideoIndex = path.lastIndexOf("/")
+                val subString = path.substring(0, currentVideoIndex)
 
 
                 if (!foldersList.any { it.path.contains(subString) }) {
@@ -149,4 +161,12 @@ class FolderFragment : Fragment() {
         }
         return videos.size
     }
+
+    override fun onClick(position: Int, type: String) {
+        if (type == Constants.FOLDER) {
+            fragment = VideoFragment()
+            FragmentMethods.addFragment(R.id.frame, fragment, parentFragmentManager)
+        }
+    }
+
 }
