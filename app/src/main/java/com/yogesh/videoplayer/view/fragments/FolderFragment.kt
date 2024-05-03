@@ -3,6 +3,7 @@ package com.yogesh.videoplayer.view.fragments
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
@@ -22,21 +23,29 @@ import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.FragmentMethods
 import com.yogesh.videoplayer.utils.RecyclerViewClickListener
+import com.yogesh.videoplayer.utils.Session
 import com.yogesh.videoplayer.view.adapters.FoldersAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FolderFragment : Fragment(), RecyclerViewClickListener {
     private lateinit var fragmentFolderBinding: FragmentFolderBinding
     private lateinit var foldersAdapter: FoldersAdapter
-    private lateinit var context: Context
+    private lateinit var myContext: Context
     private lateinit var fragment: Fragment
 
     private var videosList: MutableList<VideoResponse> = mutableListOf()
     private var foldersList: MutableList<FolderResponse> = mutableListOf()
 
+    @Inject
+    lateinit var session: Session
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.context = context
+        myContext = context
     }
 
     override fun onCreateView(
@@ -68,7 +77,7 @@ class FolderFragment : Fragment(), RecyclerViewClickListener {
             }
         } else {
             if (ContextCompat.checkSelfPermission(
-                    context,
+                    myContext,
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_DENIED
             ) {
@@ -82,7 +91,7 @@ class FolderFragment : Fragment(), RecyclerViewClickListener {
     private fun showFolders() {
         foldersList.clear()
         videosList.clear()
-        videosList = getFoldersFunc()
+        videosList.addAll(getFoldersFunc())
 
         if (foldersList.size > 0) {
             foldersAdapter.notifyDataSetChanged()
@@ -97,7 +106,7 @@ class FolderFragment : Fragment(), RecyclerViewClickListener {
     private fun getFoldersFunc(): MutableList<VideoResponse> {
         val videoList: MutableList<VideoResponse> = mutableListOf()
         val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        val cursor: Cursor? = myContext.contentResolver.query(uri, null, null, null, null)
         if (cursor != null && cursor.moveToNext()) {
             do {
                 val id = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
@@ -138,7 +147,7 @@ class FolderFragment : Fragment(), RecyclerViewClickListener {
             "%$folderPath/%",
             "%$folderPath/%/%"
         )
-        val cursor = context.contentResolver.query(uri, null, selection, selectionArgs, null)
+        val cursor = myContext.contentResolver.query(uri, null, selection, selectionArgs, null)
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 val id = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
@@ -165,6 +174,7 @@ class FolderFragment : Fragment(), RecyclerViewClickListener {
     override fun onClick(position: Int, type: String) {
         if (type == Constants.FOLDER) {
             fragment = VideoFragment()
+            session.saveData(Constants.FOLDER_PATH, foldersList[position].path)
             FragmentMethods.addFragment(R.id.frame, fragment, parentFragmentManager)
         }
     }

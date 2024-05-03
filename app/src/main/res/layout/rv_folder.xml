@@ -29,10 +29,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/poppins_medium"
-            android:text="folder name"
             android:includeFontPadding="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_11ssp"
             android:textStyle="bold" />
 
 
@@ -43,7 +42,6 @@
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:fontFamily="@font/poppins_regular"
-            android:text="3 videos"
             android:textColor="@color/lawngreen"
             android:textSize="@dimen/_9ssp" />
     </LinearLayout>

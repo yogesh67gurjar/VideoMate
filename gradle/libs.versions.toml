@@ -15,6 +15,8 @@ gson = "2.11.0"
 # lottie
 lottie = "6.4.0"
 sdp_ssp = "1.1.0"
+# glide
+glide = "4.16.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -35,6 +37,8 @@ lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie"
 ssp = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "sdp_ssp" }
 sdp = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "sdp_ssp" }
 
+# glide
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 
 
