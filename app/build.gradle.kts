@@ -68,4 +68,9 @@ dependencies {
 
     // glide
     implementation(libs.glide)
+
+    // exoplayer
+    implementation(libs.exoplayer)
+    implementation(libs.exoplayerUi)
+    implementation(libs.exoplayerDash)
 }

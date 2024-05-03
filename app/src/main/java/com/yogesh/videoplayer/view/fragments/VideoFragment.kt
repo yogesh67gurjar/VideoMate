@@ -24,6 +24,7 @@ import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.RecyclerViewClickListener
 import com.yogesh.videoplayer.utils.Session
+import com.yogesh.videoplayer.view.PlayerActivity
 import com.yogesh.videoplayer.view.adapters.VideosAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -195,8 +196,8 @@ class VideoFragment : Fragment(), RecyclerViewClickListener {
 
     override fun onClick(position: Int, type: String) {
         if (type == Constants.VIDEO) {
-            Toast.makeText(myContext, videosList[position].displayName, Toast.LENGTH_SHORT)
-                .show()
+            session.saveData(Constants.VIDEO_PATH, videosList[position].path)
+            startActivity(Intent(myContext, PlayerActivity::class.java))
         }
     }
 }

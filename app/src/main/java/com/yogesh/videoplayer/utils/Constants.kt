@@ -2,6 +2,7 @@ package com.yogesh.videoplayer.utils
 
 class Constants {
     companion object {
+        val VIDEO_PATH: String = "videoPath"
         val VIDEO: String = "video"
         val FOLDER_PATH: String = "folderPath"
         val FOLDER: String = "folder"
