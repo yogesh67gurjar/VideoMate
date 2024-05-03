@@ -8,5 +8,4 @@ data class VideoResponse(
     val duration: String,
     val path: String,
     val dateAdded: String
-) {
-}
+)

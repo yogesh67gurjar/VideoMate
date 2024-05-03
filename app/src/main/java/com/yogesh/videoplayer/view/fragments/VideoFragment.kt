@@ -9,7 +9,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yogesh.videoplayer.databinding.FragmentVideoBinding
+import com.yogesh.videoplayer.model.FolderResponse
 import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.RecyclerViewClickListener
@@ -25,6 +27,7 @@ import com.yogesh.videoplayer.utils.Session
 import com.yogesh.videoplayer.view.adapters.VideosAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,10 +58,60 @@ class VideoFragment : Fragment(), RecyclerViewClickListener {
     }
 
     private fun initSetup() {
+        clickEvents()
         videosAdapter = VideosAdapter(myContext, videosList, this)
         fragmentVideoBinding.videoRecyclerView.adapter = videosAdapter
         fragmentVideoBinding.videoRecyclerView.layoutManager = LinearLayoutManager(context)
     }
+
+    private fun clickEvents() {
+        fragmentVideoBinding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(text: Editable?) {
+                filterVideos(text.toString())
+            }
+
+        })
+    }
+
+    private fun filterVideos(text: String) {
+
+        if (text == "") {
+            if (videosList.isEmpty()) {
+                fragmentVideoBinding.videoRecyclerView.visibility = View.GONE
+                fragmentVideoBinding.noDataFound.visibility = View.VISIBLE
+            } else {
+                videosAdapter.filterList(videosList)
+                fragmentVideoBinding.videoRecyclerView.visibility = View.VISIBLE
+                fragmentVideoBinding.noDataFound.visibility = View.GONE
+            }
+        } else {
+            val filteredlist: MutableList<VideoResponse> = mutableListOf()
+
+            for (item in videosList) {
+                if (item.displayName.lowercase(Locale.ROOT).contains(text.lowercase(Locale.ROOT))) {
+                    filteredlist.add(item)
+                }
+            }
+            if (filteredlist.isEmpty()) {
+                fragmentVideoBinding.videoRecyclerView.visibility = View.GONE
+                fragmentVideoBinding.noDataFound.visibility = View.VISIBLE
+            } else {
+                videosAdapter.filterList(filteredlist)
+
+                fragmentVideoBinding.videoRecyclerView.visibility = View.VISIBLE
+                fragmentVideoBinding.noDataFound.visibility = View.GONE
+            }
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()

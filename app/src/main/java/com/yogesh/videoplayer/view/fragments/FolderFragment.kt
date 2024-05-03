@@ -3,13 +3,14 @@ package com.yogesh.videoplayer.view.fragments
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ import com.yogesh.videoplayer.utils.Session
 import com.yogesh.videoplayer.view.adapters.FoldersAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -60,9 +62,59 @@ class FolderFragment : Fragment(), RecyclerViewClickListener {
     }
 
     private fun initSetup() {
+        clickEvents()
         foldersAdapter = FoldersAdapter(foldersList, this)
         fragmentFolderBinding.folderRecyclerView.adapter = foldersAdapter
         fragmentFolderBinding.folderRecyclerView.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun clickEvents() {
+        fragmentFolderBinding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(text: Editable?) {
+                filterFolders(text.toString())
+            }
+
+        })
+    }
+
+    private fun filterFolders(text: String) {
+
+        if (text == "") {
+            if (foldersList.isEmpty()) {
+                fragmentFolderBinding.folderRecyclerView.visibility = View.GONE
+                fragmentFolderBinding.noDataFound.visibility = View.VISIBLE
+            } else {
+                foldersAdapter.filterList(foldersList)
+                fragmentFolderBinding.folderRecyclerView.visibility = View.VISIBLE
+                fragmentFolderBinding.noDataFound.visibility = View.GONE
+            }
+        } else {
+            val filteredlist: MutableList<FolderResponse> = mutableListOf()
+
+            for (item in foldersList) {
+                val indexPathIndex: Int = item.path.lastIndexOf("/")
+                if (item.path.substring(indexPathIndex + 1).lowercase(Locale.ROOT).contains(text.lowercase(Locale.ROOT))
+                ) {
+                    filteredlist.add(item)
+                }
+            }
+            if (filteredlist.isEmpty()) {
+                fragmentFolderBinding.folderRecyclerView.visibility = View.GONE
+                fragmentFolderBinding.noDataFound.visibility = View.VISIBLE
+            } else {
+                foldersAdapter.filterList(filteredlist)
+                fragmentFolderBinding.folderRecyclerView.visibility = View.VISIBLE
+                fragmentFolderBinding.noDataFound.visibility = View.GONE
+            }
+        }
     }
 
     override fun onResume() {
