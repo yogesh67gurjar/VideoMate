@@ -65,4 +65,7 @@ dependencies {
     // sdp & ssp
     implementation(libs.sdp)
     implementation(libs.ssp)
+
+    // glide
+    implementation(libs.glide)
 }
