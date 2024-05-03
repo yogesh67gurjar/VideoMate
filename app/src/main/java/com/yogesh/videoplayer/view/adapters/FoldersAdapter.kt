@@ -7,12 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.model.FolderResponse
-import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.RecyclerViewClickListener
 
 class FoldersAdapter(
-    private val folders: List<FolderResponse>,
+    private var folders: List<FolderResponse>,
     private val clickListener: RecyclerViewClickListener
 ) :
     RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
@@ -35,6 +34,11 @@ class FoldersAdapter(
                 clickListener.onClick(holder.adapterPosition, Constants.FOLDER)
             }
         }
+    }
+
+    fun filterList(filterlist: MutableList<FolderResponse>) {
+        folders = filterlist
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {

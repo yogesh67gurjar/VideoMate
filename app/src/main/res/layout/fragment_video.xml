@@ -20,12 +20,22 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_18ssp" />
 
-    <androidx.appcompat.widget.SearchView
+
+    <EditText
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
-        android:queryHint="Enter name here" />
+        android:layout_marginTop="@dimen/_8sdp"
+        android:background="@drawable/bg_searchbar"
+        android:fontFamily="@font/poppins_medium"
+        android:hint="Search..."
+        android:paddingHorizontal="@dimen/_20sdp"
+        android:paddingVertical="@dimen/_6sdp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/_9ssp" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/videoRecyclerView"

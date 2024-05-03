@@ -1,29 +1,25 @@
 package com.yogesh.videoplayer.view.adapters
 
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yogesh.videoplayer.R
+import com.yogesh.videoplayer.model.FolderResponse
 import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.RecyclerViewClickListener
 import java.io.File
-import java.io.Serializable
 
 
 class VideosAdapter(
     val context: Context,
-    private val videosList: List<VideoResponse>,
+    private var videosList: List<VideoResponse>,
     val clickListenter: RecyclerViewClickListener
 ) :
     RecyclerView.Adapter<VideosAdapter.VideosViewHolder>() {
@@ -86,6 +82,12 @@ class VideosAdapter(
     override fun getItemCount(): Int {
         return videosList.size
     }
+
+    fun filterList(filterlist: MutableList<VideoResponse>) {
+        videosList = filterlist
+        notifyDataSetChanged()
+    }
+
 
     class VideosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var thumbnail: ImageView
