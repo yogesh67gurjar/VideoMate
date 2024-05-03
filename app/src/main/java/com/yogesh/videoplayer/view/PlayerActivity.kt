@@ -66,11 +66,10 @@ class PlayerActivity : AppCompatActivity() {
             .build()
             .also { exoPlayer ->
                 activityPlayerBinding.videoView.player = exoPlayer
-                val mediaItem =
-//                    MediaItem.fromUri("https://storage.googleapis.com/exoplayer-test-media-0/play.mp3")
-                    MediaItem.fromUri(session.getData(Constants.VIDEO_PATH).toString())
-//                exoPlayer.setMediaItem(mediaItem)
-                exoPlayer.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
+                val mediaItem1 = MediaItem.fromUri(session.getData(Constants.VIDEO_PATH).toString())
+                val mediaItem2 = MediaItem.fromUri("https://storage.googleapis.com/exoplayer-test-media-0/play.mp3")
+
+                exoPlayer.setMediaItems(listOf(mediaItem1,mediaItem2), mediaItemIndex, playbackPosition)
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.prepare()
             }

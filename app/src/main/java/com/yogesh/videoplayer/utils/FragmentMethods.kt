@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
 object FragmentMethods {
-
     fun addFragment(
         frame: Int,
         fragment: Fragment,
@@ -13,6 +12,4 @@ object FragmentMethods {
         fragmentManager.beginTransaction().add(frame, fragment)
             .addToBackStack(null).commit()
     }
-
-
 }
