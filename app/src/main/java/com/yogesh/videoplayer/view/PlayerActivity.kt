@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -20,7 +18,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.databinding.ActivityPlayerBinding
-import com.yogesh.videoplayer.databinding.CustomExoplayerControlViewBinding
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.Session
 import dagger.hilt.android.AndroidEntryPoint
