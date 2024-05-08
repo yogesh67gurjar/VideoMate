@@ -163,6 +163,31 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_5ssp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rotateBtn"
+                android:layout_width="@dimen/_34sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/rotate"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:src="@drawable/rotate"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="Rotate"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_5ssp" />
+            </LinearLayout>
         </LinearLayout>
 
     </HorizontalScrollView>

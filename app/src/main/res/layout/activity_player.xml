@@ -10,7 +10,6 @@
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:controller_layout_id="@layout/custom_exoplayer_control_view"
-        app:hide_on_touch="true" />
+        app:controller_layout_id="@layout/custom_exoplayer_control_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

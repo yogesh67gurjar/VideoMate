@@ -2,6 +2,7 @@ package com.yogesh.videoplayer.view
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -15,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player.Listener
+import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
 import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.databinding.ActivityPlayerBinding
@@ -22,6 +25,7 @@ import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.Session
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
@@ -70,127 +74,151 @@ class PlayerActivity : AppCompatActivity() {
             setPip()
         }
 
-
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        setPip()
-        additionalSetup()
-        if (!isInPictureInPictureMode) {
-            if (player == null) {
-                initializePlayer()
-            }
-            hideSystemUi()
+        activityPlayerBinding.root.findViewById<LinearLayout>(R.id.rotateBtn).setOnClickListener {
+            if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE){
+            requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+                requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         }
     }
 
-    private fun additionalSetup() {
-        setPip()
-    }
+}
 
-    override fun onStop() {
-        super.onStop()
-        if (!isInPictureInPictureMode) {
-            releasePlayer()
+
+override fun onResume() {
+    super.onResume()
+    setPip()
+    additionalSetup()
+    if (!isInPictureInPictureMode) {
+        if (player == null) {
+            initializePlayer()
+        }
+        hideSystemUi()
+    }
+}
+
+private fun additionalSetup() {
+    setPip()
+}
+
+override fun onStop() {
+    super.onStop()
+    if (!isInPictureInPictureMode) {
+        releasePlayer()
+    }
+}
+
+private fun releasePlayer() {
+    player?.let { exoPlayer ->
+        playbackPosition = exoPlayer.currentPosition
+        mediaItemIndex = exoPlayer.currentMediaItemIndex
+        playWhenReady = exoPlayer.playWhenReady
+        exoPlayer.release()
+    }
+    player = null
+}
+
+private fun initializePlayer() {
+    player = ExoPlayer.Builder(this)
+        .build()
+        .also { exoPlayer ->
+            activityPlayerBinding.videoView.player = exoPlayer
+            val mediaItem = MediaItem.fromUri(session.getData(Constants.VIDEO_PATH).toString())
+            exoPlayer.setMediaItems(
+                listOf(mediaItem),
+                mediaItemIndex,
+                playbackPosition
+            )
+            exoPlayer.playWhenReady = playWhenReady
+            exoPlayer.prepare()
+        }
+
+    player!!.addListener(object : Listener {
+        override fun onVideoSizeChanged(videoSize: VideoSize) {
+            super.onVideoSizeChanged(videoSize)
+            determineAndSetOrientation(videoSize.width, videoSize.height)
+        }
+    })
+}
+
+@SuppressLint("InlinedApi")
+private fun hideSystemUi() {
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    WindowInsetsControllerCompat(window, activityPlayerBinding.videoView).let { controller ->
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
+}
+
+private fun enterPIPMode() {
+    if (packageManager
+            .hasSystemFeature(
+                PackageManager.FEATURE_PICTURE_IN_PICTURE
+            )
+    ) {
+        playbackPosition = player!!.currentPosition
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+        } else {
+            this.enterPictureInPictureMode()
         }
     }
+}
 
-    private fun releasePlayer() {
-        player?.let { exoPlayer ->
-            playbackPosition = exoPlayer.currentPosition
-            mediaItemIndex = exoPlayer.currentMediaItemIndex
-            playWhenReady = exoPlayer.playWhenReady
-            exoPlayer.release()
-        }
-        player = null
-    }
-
-    private fun initializePlayer() {
-        player = ExoPlayer.Builder(this)
-            .build()
-            .also { exoPlayer ->
-                activityPlayerBinding.videoView.player = exoPlayer
-                val mediaItem = MediaItem.fromUri(session.getData(Constants.VIDEO_PATH).toString())
-                exoPlayer.setMediaItems(
-                    listOf(mediaItem),
-                    mediaItemIndex,
-                    playbackPosition
-                )
-                exoPlayer.playWhenReady = playWhenReady
-                exoPlayer.prepare()
-            }
-    }
-
-    @SuppressLint("InlinedApi")
-    private fun hideSystemUi() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, activityPlayerBinding.videoView).let { controller ->
-            controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-    }
-
-    private fun enterPIPMode() {
+override fun onBackPressed() {
+    if (isPipEnabled()) {
         if (packageManager
                 .hasSystemFeature(
                     PackageManager.FEATURE_PICTURE_IN_PICTURE
                 )
         ) {
-            playbackPosition = player!!.currentPosition
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                this.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
-            } else {
-                this.enterPictureInPictureMode()
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (isPipEnabled()) {
-            if (packageManager
-                    .hasSystemFeature(
-                        PackageManager.FEATURE_PICTURE_IN_PICTURE
-                    )
-            ) {
-                enterPIPMode()
-            } else {
-                super.onBackPressed()
-            }
+            enterPIPMode()
         } else {
             super.onBackPressed()
         }
+    } else {
+        super.onBackPressed()
     }
+}
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onPictureInPictureModeChanged(
-        isInPictureInPictureMode: Boolean,
-        newConfig: Configuration
-    ) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+@RequiresApi(Build.VERSION_CODES.O)
+override fun onPictureInPictureModeChanged(
+    isInPictureInPictureMode: Boolean,
+    newConfig: Configuration
+) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
 
-        if (lifecycle.currentState == Lifecycle.State.CREATED) {
-            //user clicked on close button of PiP window
+    if (lifecycle.currentState == Lifecycle.State.CREATED) {
+        //user clicked on close button of PiP window
 //            finishAndRemoveTask()
-            releasePlayer()
+        releasePlayer()
 
-        } else if (lifecycle.currentState == Lifecycle.State.STARTED) {
-            if (isInPictureInPictureMode) {
-                // user clicked on minimize button
-            } else {
-                // user clicked on maximize button of PiP window
-            }
+    } else if (lifecycle.currentState == Lifecycle.State.STARTED) {
+        if (isInPictureInPictureMode) {
+            // user clicked on minimize button
+        } else {
+            // user clicked on maximize button of PiP window
         }
     }
+}
 
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        if (isPipEnabled()) {
-            enterPIPMode()
-        }
+override fun onUserLeaveHint() {
+    super.onUserLeaveHint()
+    if (isPipEnabled()) {
+        enterPIPMode()
     }
+}
 
-    private fun isPipEnabled() = session.getBool(Constants.PIP_ENABLED)
+private fun isPipEnabled() = session.getBool(Constants.PIP_ENABLED)
+
+private fun determineAndSetOrientation(width: Int, height: Int) {
+    val aspectRatio = width.toFloat() / height
+    requestedOrientation = if (aspectRatio > 1.0f) {
+
+        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+    } else {
+        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+}
 }
