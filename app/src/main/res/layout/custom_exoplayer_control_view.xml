@@ -188,6 +188,35 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_5ssp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/playbackSpeedBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_24sdp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center"
+                    android:src="@drawable/rotate"
+                    android:text="1x"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_18ssp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:text="Speed"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_5ssp" />
+            </LinearLayout>
         </LinearLayout>
 
     </HorizontalScrollView>
@@ -211,8 +240,7 @@
 
         <ImageButton
             android:id="@id/exo_play_pause"
-            style="@style/ExoStyledControls.Button.Center.PlayPause"
-            app:tint="@color/red" />
+            style="@style/ExoStyledControls.Button.Center.PlayPause" />
 
         <include layout="@layout/exo_player_control_ffwd_button" />
 
