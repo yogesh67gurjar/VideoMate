@@ -1,5 +1,7 @@
 package com.yogesh.videoplayer.model
 
+import java.io.Serializable
+
 data class VideoResponse(
     var id: String,
     val title: String,
@@ -8,4 +10,4 @@ data class VideoResponse(
     val duration: String,
     val path: String,
     val dateAdded: String
-)
+) : Serializable

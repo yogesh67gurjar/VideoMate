@@ -22,12 +22,15 @@ import com.yogesh.videoplayer.databinding.FragmentVideoBinding
 import com.yogesh.videoplayer.model.FolderResponse
 import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
+import com.yogesh.videoplayer.utils.Constants.Companion.ALL_VIDEOS
+import com.yogesh.videoplayer.utils.Constants.Companion.VIDEO_INDEX
 import com.yogesh.videoplayer.utils.RecyclerViewClickListener
 import com.yogesh.videoplayer.utils.Session
 import com.yogesh.videoplayer.view.PlayerActivity
 import com.yogesh.videoplayer.view.adapters.VideosAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.Serializable
 import java.util.Locale
 import javax.inject.Inject
 
@@ -196,8 +199,10 @@ class VideoFragment : Fragment(), RecyclerViewClickListener {
 
     override fun onClick(position: Int, type: String) {
         if (type == Constants.VIDEO) {
-            session.saveData(Constants.VIDEO_PATH, videosList[position].path)
-            startActivity(Intent(myContext, PlayerActivity::class.java))
+            val bundle = Bundle()
+            bundle.putSerializable(ALL_VIDEOS, videosList as Serializable)
+            bundle.putInt(VIDEO_INDEX, position)
+            startActivity(Intent(myContext, PlayerActivity::class.java).putExtras(bundle))
         }
     }
 }

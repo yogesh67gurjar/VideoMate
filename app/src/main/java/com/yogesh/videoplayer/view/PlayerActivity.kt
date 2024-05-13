@@ -30,6 +30,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.yogesh.videoplayer.R
 import com.yogesh.videoplayer.databinding.ActivityPlayerBinding
 import com.yogesh.videoplayer.databinding.BsPlaybackSpeedBinding
+import com.yogesh.videoplayer.databinding.CustomExoplayerControlViewBinding
+import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
 import com.yogesh.videoplayer.utils.Session
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,21 +42,28 @@ import javax.inject.Inject
 class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
     private lateinit var bsPlaybackSpeedBinding: BsPlaybackSpeedBinding
+    private var videosList: MutableList<VideoResponse> = mutableListOf()
+    private val mediaItems: MutableList<MediaItem> = mutableListOf()
+
+    private var videoIndex: Int = -1
+    private lateinit var bundle: Bundle
     private var currentSpeed: Int = 0
     private var player: ExoPlayer? = null
     private var playWhenReady = true
-    private var mediaItemIndex = 0
     private var playbackPosition = 0L
-    private var pos: Int = 1
 
     @Inject
     lateinit var session: Session
 
-    lateinit var playBackSpeedBottomSheet: BottomSheetDialog
+    private lateinit var playBackSpeedBottomSheet: BottomSheetDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityPlayerBinding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(activityPlayerBinding.root)
+
+        bundle = intent.extras!!
+        videosList = bundle.getSerializable(Constants.ALL_VIDEOS) as MutableList<VideoResponse>
+        videoIndex = bundle.getInt(Constants.VIDEO_INDEX, 0)
 
         clickEvents()
     }
@@ -227,7 +236,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun releasePlayer() {
         player?.let { exoPlayer ->
             playbackPosition = exoPlayer.currentPosition
-            mediaItemIndex = exoPlayer.currentMediaItemIndex
+            videoIndex = exoPlayer.currentMediaItemIndex
             playWhenReady = exoPlayer.playWhenReady
             exoPlayer.release()
         }
@@ -239,10 +248,16 @@ class PlayerActivity : AppCompatActivity() {
             .build()
             .also { exoPlayer ->
                 activityPlayerBinding.videoView.player = exoPlayer
-                val mediaItem = MediaItem.fromUri(session.getData(Constants.VIDEO_PATH).toString())
+
+                for (video in videosList) {
+                    mediaItems.add(MediaItem.fromUri(video.path))
+                }
+
+                player?.setMediaItems(mediaItems, videoIndex, playbackPosition)
+
                 exoPlayer.setMediaItems(
-                    listOf(mediaItem),
-                    mediaItemIndex,
+                    mediaItems,
+                    videoIndex,
                     playbackPosition
                 )
                 exoPlayer.playWhenReady = playWhenReady

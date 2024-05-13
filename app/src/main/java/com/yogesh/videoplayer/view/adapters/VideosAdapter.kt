@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yogesh.videoplayer.R
+import com.yogesh.videoplayer.databinding.RvVideoBinding
 import com.yogesh.videoplayer.model.FolderResponse
 import com.yogesh.videoplayer.model.VideoResponse
 import com.yogesh.videoplayer.utils.Constants
@@ -20,30 +21,34 @@ import java.io.File
 class VideosAdapter(
     val context: Context,
     private var videosList: List<VideoResponse>,
-    val clickListenter: RecyclerViewClickListener
+    private val clickListenter: RecyclerViewClickListener
 ) :
     RecyclerView.Adapter<VideosAdapter.VideosViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideosViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.rv_video, parent, false)
-        return VideosViewHolder(view)
+        return VideosViewHolder(
+            RvVideoBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: VideosViewHolder, position: Int) {
 
         val singleUnit = videosList[position]
 
-        holder.title.text = singleUnit.displayName
+        holder.binding.rvVideoNameTv.text = singleUnit.displayName
 
         val strSize: String = singleUnit.size
-        holder.size.text = Formatter.formatFileSize(context, strSize.toLong())
+        holder.binding.rvVideoSizeTv.text = Formatter.formatFileSize(context, strSize.toLong())
 
         val milliSeconds: Double = singleUnit.duration.toDouble()
-        holder.duration.text = timeConversion(milliSeconds.toLong())
+        holder.binding.durationTv.text = timeConversion(milliSeconds.toLong())
 
         Glide.with(context).load(File(singleUnit.path))
-            .into(holder.thumbnail)
+            .into(holder.binding.thumbnail)
 
         holder.itemView.setOnClickListener {
             if (holder.adapterPosition != RecyclerView.NO_POSITION) {
@@ -89,20 +94,6 @@ class VideosAdapter(
     }
 
 
-    class VideosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var thumbnail: ImageView
-        var threeDots: ImageView
-        var duration: TextView
-        var title: TextView
-        var size: TextView
-
-        init {
-            thumbnail = itemView.findViewById(R.id.thumbnail)
-            threeDots = itemView.findViewById(R.id.threeDots)
-            duration = itemView.findViewById(R.id.durationTv)
-            title = itemView.findViewById(R.id.rv_videoNameTv)
-            size = itemView.findViewById(R.id.rv_videoSizeTv)
-        }
-    }
+    class VideosViewHolder( val binding: RvVideoBinding) : RecyclerView.ViewHolder(binding.root)
 }
 
