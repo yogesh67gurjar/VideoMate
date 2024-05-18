@@ -56,18 +56,13 @@ class VideosAdapter(
             }
         }
 
-//        holder.threeDots.setOnClickListener { v: View? ->
-//            val bundle = Bundle()
-//            bundle.putString("name", singleUnit.getDisplayName())
-//            bundle.putString("thumbnail", singleUnit.getPath())
-//            bundle.putSerializable("video", singleUnit)
-//            bundle.putString("folderPath", folderPath)
-//            bundle.putString("folderName", folderName)
-//            bundle.putSerializable("videos", videos as Serializable)
-//            val bottomSheet = VideoThreeDot(context)
-//            bottomSheet.setArguments(bundle)
-//            bottomSheet.show(fragmentManager, bottomSheet.getTag())
-//        }
+        holder.binding.threeDots.setOnClickListener {
+
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                clickListenter.onClick(position, Constants.THREE_DOTS)
+            }
+
+        }
     }
 
     private fun timeConversion(value: Long): String {
@@ -94,6 +89,6 @@ class VideosAdapter(
     }
 
 
-    class VideosViewHolder( val binding: RvVideoBinding) : RecyclerView.ViewHolder(binding.root)
+    class VideosViewHolder(val binding: RvVideoBinding) : RecyclerView.ViewHolder(binding.root)
 }
 

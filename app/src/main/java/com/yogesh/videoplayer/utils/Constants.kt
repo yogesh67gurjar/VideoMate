@@ -2,6 +2,7 @@ package com.yogesh.videoplayer.utils
 
 class Constants {
     companion object {
+        val THREE_DOTS: String = "threeDots"
         val PIP_ENABLED: String = "pipEnabled"
         val VIDEO_PATH: String = "videoPath"
         val ALL_VIDEOS: String = "allVideos"

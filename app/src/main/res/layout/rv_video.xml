@@ -77,9 +77,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
-
                 android:maxLines="1"
-                android:text="video name"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_11ssp" />
 
@@ -89,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:includeFontPadding="false"
-                android:text="video size"
+
                 android:textColor="@color/lawngreen"
                 android:textSize="@dimen/_9ssp" />
 

@@ -30,6 +30,7 @@ import com.yogesh.videoplayer.view.PlayerActivity
 import com.yogesh.videoplayer.view.adapters.VideosAdapter
 import com.yogesh.videoplayer.view.permission.AllowPermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.newSingleThreadContext
 import java.io.Serializable
 import java.util.Locale
 import javax.inject.Inject
@@ -203,6 +204,17 @@ class VideoFragment : Fragment(), RecyclerViewClickListener {
             bundle.putSerializable(ALL_VIDEOS, videosList as Serializable)
             bundle.putInt(VIDEO_INDEX, position)
             startActivity(Intent(myContext, PlayerActivity::class.java).putExtras(bundle))
+        } else if (type == Constants.THREE_DOTS) {
+//            val bundle = Bundle()
+//            bundle.putString("name", videosList[position].displayName)
+//            bundle.putString("thumbnail", videosList[position].path)
+//            bundle.putSerializable("video", videosList[position])
+//            bundle.putString("folderPath", folderPath)
+//            bundle.putString("folderName", folderName)
+//            bundle.putSerializable("videos", videos as Serializable)
+//            val bottomSheet = VideoThreeDot(context)
+//            bottomSheet.setArguments(bundle)
+//            bottomSheet.show(fragmentManager, bottomSheet.getTag())
         }
     }
 }
