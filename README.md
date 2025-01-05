@@ -1,4 +1,4 @@
-# VideoPlayer
+# VideoMate
 
 This repository contains a Kotlin-based Android application for playing videos from local storage using the ExoPlayer library. The project also demonstrates the use of Dagger Hilt for dependency injection.
 
